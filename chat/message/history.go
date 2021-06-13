@@ -51,21 +51,7 @@ func (h *History) Get(num int) []Message {
 	h.RLock()
 	defer h.RUnlock()
 
-	max := cap(h.entries)
-	if num > h.size {
-		num = h.size
-	}
-
-	r := make([]Message, num)
-	for i := 0; i < num; i++ {
-		idx := (h.head - i) % max
-		if idx < 0 {
-			idx += max
-		}
-		r[num-i-1] = h.entries[idx]
-	}
-
-	return r
+	return make([]Message, 0)
 }
 
 // SetOutput sets the output for logging added messages

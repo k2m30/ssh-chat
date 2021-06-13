@@ -400,33 +400,6 @@ func (h *Host) InitCommands(c *chat.Commands) {
 		},
 	})
 
-	c.Add(chat.Command{
-		Prefix:     "/whois",
-		PrefixHelp: "USER",
-		Help:       "Information about USER.",
-		Handler: func(room *chat.Room, msg message.CommandMsg) error {
-			args := msg.Args()
-			if len(args) == 0 {
-				return errors.New("must specify user")
-			}
-
-			target, ok := h.GetUser(args[0])
-			if !ok {
-				return errors.New("user not found")
-			}
-			id := target.Identifier.(*Identity)
-			var whois string
-			switch room.IsOp(msg.From()) {
-			case true:
-				whois = id.WhoisAdmin(room)
-			case false:
-				whois = id.Whois(room)
-			}
-			room.Send(message.NewSystemMsg(whois, msg.From()))
-
-			return nil
-		},
-	})
 
 	// Hidden commands
 	c.Add(chat.Command{
@@ -513,7 +486,6 @@ func (h *Host) InitCommands(c *chat.Commands) {
 			room.Send(message.NewAnnounceMsg(body))
 			target.Close()
 
-			logger.Debugf("Banned: \n-> %s", id.Whois(room))
 
 			return nil
 		},
